@@ -1,10 +1,8 @@
 import asyncio
 import logging
+import subprocess
 import sys
 from logging.handlers import TimedRotatingFileHandler
-
-from telegram import Bot
-from telegram.error import Forbidden
 
 from bot import load_bot_token
 from outages import outage_reader
@@ -35,11 +33,8 @@ def configure_logging() -> None:
 
     logging.info("Starting notification script.")
 
-
-async def main() -> None:
+def main() -> None:
     configure_logging()
-
-    bot = Bot(token=load_bot_token())
 
     outages = outage_reader.all()
     users = user_storage.all()
@@ -48,22 +43,39 @@ async def main() -> None:
         outage = user.get_first_outage(outages)
 
         if outage:
-            if (user.is_notified(outage)):
+            if user.is_notified(outage):
                 logging.info(f"Outage already notified for user {chat_id} - {user.street_name}, {user.building}")
                 continue
 
-            try:
-                await bot.send_message(chat_id=chat_id, text=outage.format_message(), parse_mode="HTML")
-                user_storage.save(chat_id, user.set_outage(outage))
-                logging.info(f"Notification sent to {chat_id} - {user.street_name}, {user.building}")
-            except Forbidden:
-                user_storage.remove(chat_id)
-                logging.info(f"Subscription removed for blocked user {chat_id}.")
-            except Exception as e:
-                logging.error(f"Failed to send message to {chat_id}: {e}")
+            result = subprocess.run(
+                [
+                    "java",
+                    "-Djava.net.preferIPv6Addresses=true",  # Ensure IPv6 preference
+                    "-jar",
+                    "telegram-bot/target/uberjar/telegram-bot-0.1.0-SNAPSHOT-standalone.jar",
+                    load_bot_token(),
+                    str(chat_id),
+                    outage.format_message(),
+                ],
+                capture_output=True,
+                text=True
+            )
+
+            if result.returncode == 0:
+                status_code = int(result.stdout.strip())
+                if status_code == 200:
+                    user.set_outage(outage)
+                    user_storage.save(chat_id, user)
+                    logging.info(f"Notification sent to {chat_id} - {user.street_name}, {user.building}")
+                elif status_code == 403:
+                    user_storage.remove(chat_id)
+                    logging.info(f"Subscription removed for blocked user {chat_id}.")
+                else:
+                    logging.error(f"Failed to send message to {chat_id}: Status {status_code}")
+            else:
+                logging.error(f"Command failed with return code {result.returncode}: {result.stderr}")
         else:
             logging.info(f"No relevant outage found for user {chat_id} - {user.street_name}, {user.building}")
 
-
 if __name__ == "__main__":
-    asyncio.run(main())
+    main()

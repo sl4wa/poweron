@@ -1,0 +1,3 @@
+[EXECUTABLE]
+telegram-bot
+
