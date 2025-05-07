@@ -1,10 +1,10 @@
-# Poweron-Bot
+## Poweron-Bot
 
-## Dependencies
+### Dependencies
 
 python, go, curl, jq (all packed into docker)
 
-## Data flow
+### Data flow
 
 1. get all outages using curl and parse using jq (`parser.sh`);
 2.  push all outages to standard input of Go checker (`cmd/checker.go`);
@@ -12,7 +12,7 @@ python, go, curl, jq (all packed into docker)
 
 `bot.py` - persistent bot manager
 
-## Architecture
+### Architecture
 
 users storage: `users/data`, format: ini file
 
