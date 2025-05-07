@@ -1,56 +1,87 @@
+#!/usr/bin/env python3
+
 import asyncio
 import logging
-import os
 import sys
-import time
-from logging.handlers import TimedRotatingFileHandler
-
-from telegram import Bot
+from dataclasses import dataclass
+from datetime import datetime
+from typing import Optional, Tuple
 
 from env import load_bot_token
-from outages import OutageNotifier
-from outages.outage_processor import OutageProcessor
+from telegram import Bot
+from telegram.constants import ParseMode
+from telegram.error import TelegramError, Forbidden
 from users import UserStorage
 
-LOG_FILE = "notifier.log"
+@dataclass
+class Outage:
+    start_date: str
+    end_date: str
+    city: str
+    street_id: Optional[int]
+    street: str
+    building: str
+    comment: str
 
-os.environ["TZ"] = "Europe/Kyiv"
-time.tzset()
+    @staticmethod
+    def _fmt(iso: str) -> str:
+        try:
+            return datetime.fromisoformat(iso).strftime("%Y-%m-%d %H:%M")
+        except ValueError:
+            return iso
 
-def configure_logging() -> None:
-    file_handler = TimedRotatingFileHandler(
-        LOG_FILE,
-        when="midnight",
-        interval=1,
-        backupCount=5,
-        encoding="utf-8",
-    )
-    file_handler.suffix = "%Y-%m-%d.log"
+    def format_message(self) -> str:
+        return (
+            "Поточні відключення:\n"
+            f"Місто: {self.city}\n"
+            f"Вулиця: {self.street}\n"
+            f"<b>{self._fmt(self.start_date)} – {self._fmt(self.end_date)}</b>\n"
+            f"Коментар: {self.comment}\n"
+            f"Будинки: {self.building}"
+        )
 
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-        datefmt="%Y-%m-%d %H:%M:%S",
-        handlers=[file_handler, logging.StreamHandler(sys.stdout)],
-    )
-
-    httpx_logger = logging.getLogger("httpx")
-    httpx_logger.setLevel(logging.WARNING)
+def parse_row(raw: str) -> Tuple[int, Outage]:
+    parts = raw.rstrip("\n").split("\t")
+    if len(parts) != 7:
+        raise ValueError(f"Expected 7 columns, got {len(parts)}")
+    chat_id_s, start, end, city, street, building, comment = parts
+    return int(chat_id_s), Outage(start, end, city, None, street, building, comment)
 
 async def main() -> None:
+    logging.basicConfig(level=logging.INFO)
     logger = logging.getLogger("notifier")
-    bot = Bot(token=load_bot_token())
-    user_storage = UserStorage()
-    outage_processor = OutageProcessor()
 
-    outage_notifier = OutageNotifier(
-        logger=logger,
-        bot=bot,
-        user_storage=user_storage,
-        outage_processor=outage_processor,
-    )
-    await outage_notifier.notify()
+    bot = Bot(load_bot_token())
+    user_storage = UserStorage()
+
+    for lineno, line in enumerate(sys.stdin, 1):
+        if not line.strip():
+            continue
+
+        try:
+            chat_id, outage = parse_row(line)
+        except ValueError as exc:
+            logger.warning(f"line {lineno}: {exc}")
+            continue
+
+        try:
+            await bot.send_message(
+                chat_id=chat_id,
+                text=outage.format_message(),
+                parse_mode=ParseMode.HTML,
+            )
+            user_storage.update_outage(
+                chat_id,
+                outage.start_date,
+                outage.end_date,
+                outage.comment,
+            )
+            logger.info(f"Notification sent to {chat_id}")
+        except Forbidden:
+            user_storage.remove(chat_id)
+            logger.info(f"Subscription removed for blocked user {chat_id}.")
+        except TelegramError as err:
+            logger.error(f"Failed to send message to {chat_id}: {err}")
 
 if __name__ == "__main__":
-    configure_logging()
     asyncio.run(main())

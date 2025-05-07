@@ -27,19 +27,3 @@ class User:
     def to_dict(self) -> dict[str, str]:
         """Convert the User to a dictionary."""
         return {key: str(value) for key, value in asdict(self).items() if value is not None}
-
-    def is_notified(self, outage: "Outage") -> bool:
-        """Check if the outage is already notified for the user."""
-        return (
-            outage.start_date == self.start_date
-            and outage.end_date == self.end_date
-            and outage.comment == self.comment
-        )
-
-    def set_outage(self, outage: "Outage") -> Self:
-        """Update the user's outage information."""
-        self.start_date = outage.start_date
-        self.end_date = outage.end_date
-        self.comment = outage.comment
-
-        return self

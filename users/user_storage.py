@@ -47,11 +47,14 @@ class UserStorage:
         if os.path.exists(file_path):
             os.remove(file_path)
 
-    def all(self) -> Iterator[tuple[int, User]]:
-        """Load all users as a generator."""
-        for filename in os.listdir(self.data_directory):
-            if filename.endswith(".txt"):
-                chat_id = int(filename.replace(".txt", ""))
-                user = self.get(chat_id)
-                if user:
-                    yield chat_id, user
+    def update_outage(self, chat_id: int, start_date: str, end_date: str, comment: str) -> None:
+        """Update the outage information"""
+        user = self.get(chat_id)
+        if user is None:
+            raise ValueError(f"User with chat_id {chat_id} does not exist.")
+
+        user.start_date = start_date
+        user.end_date = end_date
+        user.comment = comment
+
+        self.save(chat_id, user)
