@@ -58,3 +58,12 @@ class UserStorage:
         user.comment = comment
 
         self.save(chat_id, user)
+
+    def all(self) -> Iterator[tuple[int, User]]:
+        """Load all users as a generator."""
+        for filename in os.listdir(self.data_directory):
+            if filename.endswith(".txt"):
+                chat_id = int(filename.replace(".txt", ""))
+                user = self.get(chat_id)
+                if user:
+                    yield chat_id, user
