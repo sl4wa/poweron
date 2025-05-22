@@ -92,7 +92,8 @@ func loadUsers() ([]*User, error) {
 		return nil, err
 	}
 
-	var users []*User
+	users := make([]*User, 0, len(dirEntries))
+
 	for _, de := range dirEntries {
 		if de.IsDir() || !strings.HasSuffix(de.Name(), ".txt") {
 			continue
