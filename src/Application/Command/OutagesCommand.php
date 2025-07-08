@@ -9,10 +9,10 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 #[AsCommand(
-    name: 'app:outages:list',
+    name: 'app:outages',
     description: 'Prints a table of outages fetched from the remote API for debug purposes.'
 )]
-class DebugOutagesListingCommand extends Command
+class OutagesCommand extends Command
 {
     public function __construct(
         private readonly OutageProviderInterface $outageProvider

@@ -14,7 +14,7 @@ use Symfony\Component\Console\Output\OutputInterface;
     name: 'app:notifier',
     description: 'Fetch outages, prepare notifications, and send them via Telegram.',
 )]
-class CronNotifierCommand extends Command
+class NotifierCommand extends Command
 {
     public function __construct(
         private readonly OutageProviderInterface $outageProvider,

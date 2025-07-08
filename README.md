@@ -10,10 +10,10 @@ Telegram bot for power outages in Lviv, Ukraine.
 - `symfony console app:notifier`  
   Cron command: check if any user has relevant outage.
 
-- `symfony console app:outages:list`  
+- `symfony console app:outages`  
   List current outages from API.
 
-- `symfony console app:users:list`  
+- `symfony console app:users`  
   *TODO* List subscribed users
 
 ## TODO

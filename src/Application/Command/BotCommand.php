@@ -12,7 +12,7 @@ use Symfony\Component\Console\Output\OutputInterface;
     name: 'app:bot',
     description: 'Run the Telegram bot using Nutgram.'
 )]
-class RunBotCommand extends Command
+class BotCommand extends Command
 {
     private BotApplication $botService;
 
