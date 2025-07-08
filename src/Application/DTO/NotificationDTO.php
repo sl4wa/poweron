@@ -1,7 +1,7 @@
 <?php
-namespace App\Domain\ValueObject;
+namespace App\Application\DTO;
 
-class Notification
+class NotificationDTO
 {
     public function __construct(
         public readonly int $userId,

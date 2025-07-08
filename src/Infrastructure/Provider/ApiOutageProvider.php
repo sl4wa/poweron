@@ -1,8 +1,8 @@
 <?php
 namespace App\Infrastructure\Provider;
 
+use App\Application\Interface\Provider\OutageProviderInterface;
 use App\Domain\Entity\Outage;
-use App\Domain\Interface\Provider\OutageProviderInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class ApiOutageProvider implements OutageProviderInterface

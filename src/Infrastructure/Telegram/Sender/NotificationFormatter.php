@@ -1,11 +1,11 @@
 <?php
-namespace App\Infrastructure\Telegram;
+namespace App\Infrastructure\Telegram\Sender;
 
-use App\Domain\ValueObject\Notification;
+use App\Application\DTO\NotificationDTO;
 
 class NotificationFormatter
 {
-    public function format(Notification $notification): string
+    public function format(NotificationDTO $notification): string
     {
         return "Поточні відключення:\n"
             ."Місто: {$notification->city}\n"

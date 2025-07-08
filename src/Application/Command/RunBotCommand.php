@@ -2,7 +2,7 @@
 
 namespace App\Application\Command;
 
-use App\Application\BotApplication;
+use App\Application\Service\BotApplication;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;

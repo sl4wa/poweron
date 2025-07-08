@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\Interface\Provider;
+namespace App\Application\Interface\Provider;
 
 use App\Domain\Entity\Outage;
 

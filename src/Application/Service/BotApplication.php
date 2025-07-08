@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Application;
+namespace App\Application\Service;
 
-use SergiX44\Nutgram\Nutgram;
-use SergiX44\Nutgram\Conversations\Conversation;
-use App\Infrastructure\Telegram\Handlers\SubscriptionConversation;
 use App\Infrastructure\Telegram\Handlers\StopCommand;
+use App\Infrastructure\Telegram\Handlers\SubscriptionConversation;
 use App\Infrastructure\Telegram\Handlers\SubscriptionInfoCommand;
+use SergiX44\Nutgram\Conversations\Conversation;
+use SergiX44\Nutgram\Nutgram;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class BotApplication
