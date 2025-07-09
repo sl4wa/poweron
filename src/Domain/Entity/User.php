@@ -1,7 +1,7 @@
 <?php
 namespace App\Domain\Entity;
 
-use App\Application\DTO\NotificationDTO;
+use App\Domain\ValueObject\Notification;
 
 class User
 {
@@ -15,7 +15,7 @@ class User
         public readonly string $comment
     ) {}
 
-    public function withUpdatedOutageFromNotification(NotificationDTO $notification): self
+    public function withUpdatedOutageFromNotification(Notification $notification): self
     {
         return new self(
             $this->id,

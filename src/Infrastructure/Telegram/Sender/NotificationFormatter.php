@@ -1,15 +1,15 @@
 <?php
 namespace App\Infrastructure\Telegram\Sender;
 
-use App\Application\DTO\NotificationDTO;
+use App\Domain\ValueObject\Notification;
 
 class NotificationFormatter
 {
-    public function format(NotificationDTO $notification): string
+    public function format(Notification $notification): string
     {
         return "Поточні відключення:\n"
             ."Місто: {$notification->city}\n"
-            ."Вулиця: {$notification->street}\n"
+            ."Вулиця: {$notification->streetName}\n"
             ."<b>{$notification->start->format('Y-m-d H:i')} – {$notification->end->format('Y-m-d H:i')}</b>\n"
             ."Коментар: {$notification->comment}\n"
             ."Будинки: {$notification->building}";

@@ -1,9 +1,9 @@
 <?php
 namespace App\Domain\Service;
 
-use App\Application\DTO\NotificationDTO;
 use App\Domain\Entity\Outage;
 use App\Domain\Interface\Repository\UserRepositoryInterface;
+use App\Domain\ValueObject\Notification;
 
 class OutageProcessor
 {
@@ -11,7 +11,7 @@ class OutageProcessor
 
     /**
      * @param Outage[] $outages
-     * @return NotificationDTO[]
+     * @return Notification[]
      */
     public function process(array $outages): array
     {
@@ -29,7 +29,7 @@ class OutageProcessor
                         $sent[$user->id] = true;
                         continue;
                     }
-                    $notifications[] = new NotificationDTO(
+                    $notifications[] = new Notification(
                         $user->id,
                         $outage->start,
                         $outage->end,

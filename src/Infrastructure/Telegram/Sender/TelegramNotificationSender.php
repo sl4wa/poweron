@@ -2,7 +2,7 @@
 
 namespace App\Infrastructure\Telegram\Sender;
 
-use App\Application\DTO\NotificationDTO;
+use App\Domain\ValueObject\Notification;
 use App\Application\Exception\NotificationSendException;
 use App\Application\Interface\Service\NotificationSenderInterface;
 use SergiX44\Nutgram\Nutgram;
@@ -15,7 +15,7 @@ class TelegramNotificationSender implements NotificationSenderInterface
         private readonly NotificationFormatter $formatter,
     ) {}
 
-    public function send(NotificationDTO $notification): void
+    public function send(Notification $notification): void
     {
         try {
             $this->bot->sendMessage(

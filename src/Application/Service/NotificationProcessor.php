@@ -2,10 +2,11 @@
 
 namespace App\Application\Service;
 
-use App\Application\DTO\NotificationDTO;
 use App\Application\Exception\NotificationSendException;
 use App\Application\Interface\Service\NotificationSenderInterface;
 use App\Domain\Interface\Repository\UserRepositoryInterface;
+use App\Domain\ValueObject\Notification;
+
 
 class NotificationProcessor
 {
@@ -15,21 +16,21 @@ class NotificationProcessor
     ) {}
 
     /**
-     * @param NotificationDTO[] $notificationDTOs
+     * @param Notification[] $notifications
      * @return int Number of successfully sent notifications
      */
-    public function process(array $notificationDTOs): int
+    public function process(array $notifications): int
     {
         $sent = 0;
 
-        foreach ($notificationDTOs as $dto) {
+        foreach ($notifications as $notification) {
             try {
-                $this->notificationSender->send($dto);
+                $this->notificationSender->send($notification);
 
-                $user = $this->userRepository->find($dto->userId);
+                $user = $this->userRepository->find($notification->userId);
                 if ($user) {
-                     $updatedUser = $user->withUpdatedOutageFromNotification($dto);
-                     $this->userRepository->save($updatedUser);
+                    $updatedUser = $user->withUpdatedOutageFromNotification($notification);
+                    $this->userRepository->save($updatedUser);
                 }
 
                 $sent++;

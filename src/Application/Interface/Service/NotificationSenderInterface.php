@@ -2,7 +2,7 @@
 
 namespace App\Application\Interface\Service;
 
-use App\Application\DTO\NotificationDTO;
+use App\Domain\ValueObject\Notification;
 use App\Application\Exception\NotificationSendException;
 
 interface NotificationSenderInterface
@@ -10,5 +10,5 @@ interface NotificationSenderInterface
     /**
      * @throws NotificationSendException
      */
-    public function send(NotificationDTO $notification): void;
+    public function send(Notification $notification): void;
 }

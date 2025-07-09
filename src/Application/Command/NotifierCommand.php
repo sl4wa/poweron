@@ -27,9 +27,9 @@ class NotifierCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $outages = $this->outageProvider->fetchOutages();
-        $notificationDTOs = $this->outageProcessor->process($outages);
+        $notifications = $this->outageProcessor->process($outages);
 
-        $sent = $this->notificationProcessor->process($notificationDTOs);
+        $sent = $this->notificationProcessor->process($notifications);
 
         $output->writeln("<info>Successfully sent $sent notifications.</info>");
         return Command::SUCCESS;
