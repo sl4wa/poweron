@@ -2,6 +2,7 @@
 
 namespace App\Infrastructure\Telegram\Sender;
 
+use App\Domain\Entity\User;
 use App\Domain\ValueObject\Notification;
 use App\Application\Exception\NotificationSendException;
 use App\Application\Interface\Service\NotificationSenderInterface;
@@ -15,24 +16,24 @@ class TelegramNotificationSender implements NotificationSenderInterface
         private readonly TelegramNotificationFormatter $formatter,
     ) {}
 
-    public function send(Notification $notification): void
+    public function send(User $user): void
     {
         try {
             $this->bot->sendMessage(
-                text: $this->formatter->format($notification),
-                chat_id: $notification->userId,
+                text: $this->formatter->format($user->notification),
+                chat_id: $user->id,
                 parse_mode: 'HTML'
             );
         } catch (TelegramException $e) {
             throw new NotificationSendException(
-                $notification->userId,
+                $user->id,
                 $e->getMessage(),
                 $e->getCode(),
                 $e
             );
         } catch (\Throwable $e) {
             throw new NotificationSendException(
-                $notification->userId,
+                $user->id,
                 $e->getMessage(),
                 0,
                 $e

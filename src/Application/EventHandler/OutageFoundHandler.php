@@ -2,8 +2,8 @@
 
 namespace App\Application\EventHandler;
 
-use App\Application\Event\OutageFound;
-use App\Application\Event\OutageNotificationCreated;
+use App\Domain\Event\OutageFound;
+use App\Domain\Event\OutageNotificationCreated;
 use App\Domain\Service\OutageProcessor;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
@@ -21,10 +21,10 @@ final class OutageFoundHandler
         $outage = $event->outage;
         $usersToBeChecked = $event->usersToBeChecked;
 
-        $notification = $this->outageProcessor->process($outage, $usersToBeChecked);
+        $usersToBeNotified = $this->outageProcessor->process($outage, $usersToBeChecked);
 
-        if ($notification) {
-            $notificationEvent = new OutageNotificationCreated($notification);
+        if ($usersToBeNotified) {
+            $notificationEvent = new OutageNotificationCreated($usersToBeNotified);
             $this->eventDispatcher->dispatch($notificationEvent);
         }
     }

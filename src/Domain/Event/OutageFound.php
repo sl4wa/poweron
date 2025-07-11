@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Application\Event;
+namespace App\Domain\Event;
 
 use App\Domain\Entity\Outage;
 

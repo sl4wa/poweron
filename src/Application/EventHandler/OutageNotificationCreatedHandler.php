@@ -1,14 +1,16 @@
 <?php
 namespace App\Application\EventHandler;
 
-use App\Application\Event\OutageNotificationCreated;
 use App\Application\Exception\NotificationSendException;
 use App\Application\Interface\Repository\UserRepositoryInterface;
 use App\Application\Interface\Service\NotificationSenderInterface;
+use App\Domain\Event\OutageNotificationCreated;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 
 final class OutageNotificationCreatedHandler
 {
+    private static array $notifiedUserIds = [];
+
     public function __construct(
         private readonly NotificationSenderInterface $notificationSender,
         private readonly UserRepositoryInterface $userRepository,
@@ -17,16 +19,24 @@ final class OutageNotificationCreatedHandler
     #[AsEventListener(event: OutageNotificationCreated::class)]
     public function __invoke(OutageNotificationCreated $event): void
     {
-        $notification = $event->notification;
-        $user = $this->userRepository->find($event->notification->userId);
+        foreach ($event->usersToBeNotified as $user) {
+            // Only send notification if user has not been notified yet in this run
+            if (in_array($user->id, self::$notifiedUserIds, true)) {
+                continue;
+            }
 
-        try {
-            $this->notificationSender->send($notification);
-            $updatedUser = $user->withUpdatedOutageFromNotification($notification);
-            $this->userRepository->save($updatedUser);
-        } catch (NotificationSendException $e) {
-            if ($e->isBlocked()) {
-                $this->userRepository->remove($e->userId);
+            try {
+                $this->notificationSender->send($user);
+                $updatedUser = $user->withUpdatedOutageFromNotification();
+                $this->userRepository->save($updatedUser);
+
+                // Mark user as notified
+                self::$notifiedUserIds[] = $user->id;
+
+            } catch (NotificationSendException $e) {
+                if ($e->isBlocked()) {
+                    $this->userRepository->remove($e->userId);
+                }
             }
         }
     }
