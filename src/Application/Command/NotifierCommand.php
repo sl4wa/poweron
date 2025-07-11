@@ -21,7 +21,7 @@ class NotifierCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $sent = $this->notificationService->notify();
-        $output->writeln("<info>Successfully sent $sent notifications.</info>");
+        $output->writeln("<info>Successfully dispatched $sent outages.</info>");
         return Command::SUCCESS;
     }
 }

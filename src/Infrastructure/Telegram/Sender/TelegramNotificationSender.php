@@ -20,19 +20,19 @@ class TelegramNotificationSender implements NotificationSenderInterface
         try {
             $this->bot->sendMessage(
                 text: $this->formatter->format($notification),
-                chat_id: $notification->userId,
+                chat_id: $notification->user->id,
                 parse_mode: 'HTML'
             );
         } catch (TelegramException $e) {
             throw new NotificationSendException(
-                $notification->userId,
+                $notification->user->id,
                 $e->getMessage(),
                 $e->getCode(),
                 $e
             );
         } catch (\Throwable $e) {
             throw new NotificationSendException(
-                $notification->userId,
+                $notification->user->id,
                 $e->getMessage(),
                 0,
                 $e
