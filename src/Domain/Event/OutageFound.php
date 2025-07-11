@@ -8,6 +8,5 @@ class OutageFound
 {
     public function __construct(
         public Outage $outage,
-        public array $usersToBeChecked
     ) {}
 }

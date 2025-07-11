@@ -4,10 +4,10 @@ namespace App\Application\EventHandler;
 use App\Application\Exception\NotificationSendException;
 use App\Application\Interface\Repository\UserRepositoryInterface;
 use App\Application\Interface\Service\NotificationSenderInterface;
-use App\Domain\Event\OutageNotificationCreated;
+use App\Domain\Event\OutageProcessed;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 
-final class OutageNotificationCreatedHandler
+final class OutageProcessedHandler
 {
     private static array $notifiedUserIds = [];
 
@@ -16,8 +16,8 @@ final class OutageNotificationCreatedHandler
         private readonly UserRepositoryInterface $userRepository,
     ) {}
 
-    #[AsEventListener(event: OutageNotificationCreated::class)]
-    public function __invoke(OutageNotificationCreated $event): void
+    #[AsEventListener(event: OutageProcessed::class)]
+    public function __invoke(OutageProcessed $event): void
     {
         foreach ($event->usersToBeNotified as $user) {
             // Only send notification if user has not been notified yet in this run

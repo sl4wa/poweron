@@ -2,16 +2,20 @@
 
 namespace App\Application\EventHandler;
 
+use App\Application\Interface\Repository\UserRepositoryInterface;
 use App\Domain\Event\OutageFound;
-use App\Domain\Event\OutageNotificationCreated;
+use App\Domain\Event\OutageProcessed;
 use App\Domain\Service\OutageProcessor;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 final class OutageFoundHandler
 {
+    private static $usersToBeChecked = [];
+
     public function __construct(
         private readonly OutageProcessor $outageProcessor,
+        private readonly UserRepositoryInterface $userRepository,
         private readonly EventDispatcherInterface $eventDispatcher,
     ) {}
 
@@ -19,12 +23,14 @@ final class OutageFoundHandler
     public function __invoke(OutageFound $event): void
     {
         $outage = $event->outage;
-        $usersToBeChecked = $event->usersToBeChecked;
+        if (empty(self::$usersToBeChecked)) {
+            self::$usersToBeChecked = $this->userRepository->findAll();
+        }
 
-        $usersToBeNotified = $this->outageProcessor->process($outage, $usersToBeChecked);
+        $usersToBeNotified = $this->outageProcessor->process($outage, self::$usersToBeChecked);
 
         if ($usersToBeNotified) {
-            $notificationEvent = new OutageNotificationCreated($usersToBeNotified);
+            $notificationEvent = new OutageProcessed($usersToBeNotified);
             $this->eventDispatcher->dispatch($notificationEvent);
         }
     }
