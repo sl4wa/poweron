@@ -3,7 +3,7 @@ namespace App\Infrastructure\Telegram\Sender;
 
 use App\Domain\ValueObject\Notification;
 
-class NotificationFormatter
+class TelegramNotificationFormatter
 {
     public function format(Notification $notification): string
     {

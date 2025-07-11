@@ -1,9 +1,8 @@
 <?php
 
-namespace App\Domain\Event;
+namespace App\Application\Event;
 
 use App\Domain\Entity\Outage;
-use App\Domain\Entity\User;
 
 class OutageFound
 {

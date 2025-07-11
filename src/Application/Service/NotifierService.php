@@ -1,12 +1,12 @@
 <?php
 namespace App\Application\Service;
 
+use App\Application\Event\OutageFound;
 use App\Application\Interface\Provider\OutageProviderInterface;
 use App\Application\Interface\Repository\UserRepositoryInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
-use App\Domain\Event\OutageFound;
 
-class OutageNotificationService
+class NotifierService
 {
     public function __construct(
         private readonly OutageProviderInterface $outageProvider,

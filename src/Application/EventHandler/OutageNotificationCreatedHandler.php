@@ -1,13 +1,13 @@
 <?php
 namespace App\Application\EventHandler;
 
-use App\Domain\Event\OutageNotificationCreated;
-use App\Application\Interface\Service\NotificationSenderInterface;
-use App\Application\Interface\Repository\UserRepositoryInterface;
+use App\Application\Event\OutageNotificationCreated;
 use App\Application\Exception\NotificationSendException;
+use App\Application\Interface\Repository\UserRepositoryInterface;
+use App\Application\Interface\Service\NotificationSenderInterface;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 
-final class SendOutageNotificationHandler
+final class OutageNotificationCreatedHandler
 {
     public function __construct(
         private readonly NotificationSenderInterface $notificationSender,
@@ -18,7 +18,7 @@ final class SendOutageNotificationHandler
     public function __invoke(OutageNotificationCreated $event): void
     {
         $notification = $event->notification;
-        $user = $event->user;
+        $user = $this->userRepository->find($event->notification->userId);
 
         try {
             $this->notificationSender->send($notification);

@@ -1,7 +1,7 @@
 <?php
 namespace App\Application\Command;
 
-use App\Application\Service\OutageNotificationService;
+use App\Application\Service\NotifierService;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -13,7 +13,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 )]
 class NotifierCommand extends Command
 {
-    public function __construct(private readonly OutageNotificationService $notificationService)
+    public function __construct(private readonly NotifierService $notificationService)
     {
         parent::__construct();
     }

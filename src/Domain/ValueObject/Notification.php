@@ -7,7 +7,7 @@ use App\Domain\Entity\User;
 class Notification
 {
     public function __construct(
-        public User $user,
+        public int $userId,
         public \DateTimeImmutable $start,
         public \DateTimeImmutable $end,
         public string $city,

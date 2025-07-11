@@ -18,7 +18,7 @@ class OutageProcessor
         foreach ($usersToBeChecked as $user) {
             if ($outage->matchesUser($user) && !$outage->isIdenticalPeriodAndComment($user)) {
                 return new Notification(
-                    $user,
+                    $user->id,
                     $outage->start,
                     $outage->end,
                     $outage->city,

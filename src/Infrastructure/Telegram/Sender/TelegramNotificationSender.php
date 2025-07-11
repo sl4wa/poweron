@@ -12,7 +12,7 @@ class TelegramNotificationSender implements NotificationSenderInterface
 {
     public function __construct(
         private readonly Nutgram $bot,
-        private readonly NotificationFormatter $formatter,
+        private readonly TelegramNotificationFormatter $formatter,
     ) {}
 
     public function send(Notification $notification): void
@@ -20,19 +20,19 @@ class TelegramNotificationSender implements NotificationSenderInterface
         try {
             $this->bot->sendMessage(
                 text: $this->formatter->format($notification),
-                chat_id: $notification->user->id,
+                chat_id: $notification->userId,
                 parse_mode: 'HTML'
             );
         } catch (TelegramException $e) {
             throw new NotificationSendException(
-                $notification->user->id,
+                $notification->userId,
                 $e->getMessage(),
                 $e->getCode(),
                 $e
             );
         } catch (\Throwable $e) {
             throw new NotificationSendException(
-                $notification->user->id,
+                $notification->userId,
                 $e->getMessage(),
                 0,
                 $e
