@@ -38,8 +38,8 @@ class Outage
 
     public function isIdenticalPeriodAndComment(User $user): bool
     {
-        return $user->startDate == $this->start->format('c')
-            && $user->endDate == $this->end->format('c')
+        return $user->startDate == $this->start
+            && $user->endDate == $this->end
             && $user->comment == $this->comment;
     }
 }

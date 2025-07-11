@@ -30,7 +30,7 @@ final class OutageFoundHandler
         $usersToBeNotified = $this->outageProcessor->process($outage, self::$usersToBeChecked);
 
         if ($usersToBeNotified) {
-            $notificationEvent = new OutageProcessed($usersToBeNotified);
+            $notificationEvent = new OutageProcessed($outage, $usersToBeNotified);
             $this->eventDispatcher->dispatch($notificationEvent);
         }
     }

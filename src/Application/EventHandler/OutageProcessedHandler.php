@@ -4,6 +4,7 @@ namespace App\Application\EventHandler;
 use App\Application\Exception\NotificationSendException;
 use App\Application\Interface\Repository\UserRepositoryInterface;
 use App\Application\Interface\Service\NotificationSenderInterface;
+use App\Domain\DTO\NotificationSenderDTO;
 use App\Domain\Event\OutageProcessed;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 
@@ -19,6 +20,8 @@ final class OutageProcessedHandler
     #[AsEventListener(event: OutageProcessed::class)]
     public function __invoke(OutageProcessed $event): void
     {
+        $outage = $event->outage;
+
         foreach ($event->usersToBeNotified as $user) {
             // Only send notification if user has not been notified yet in this run
             if (in_array($user->id, self::$notifiedUserIds, true)) {
@@ -26,8 +29,13 @@ final class OutageProcessedHandler
             }
 
             try {
-                $this->notificationSender->send($user);
-                $updatedUser = $user->withUpdatedOutageFromNotification();
+                $this->notificationSender->send(
+                    new NotificationSenderDTO(
+                        $user,
+                        $outage
+                    )
+                );
+                $updatedUser = $user->withUpdatedOutage($outage);
                 $this->userRepository->save($updatedUser);
 
                 // Mark user as notified

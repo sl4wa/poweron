@@ -1,8 +1,6 @@
 <?php
 namespace App\Domain\Entity;
 
-use App\Domain\ValueObject\Notification;
-
 class User
 {
     public function __construct(
@@ -10,22 +8,22 @@ class User
         public readonly int $streetId,
         public readonly string $streetName,
         public readonly string $building,
-        public readonly string $startDate,
-        public readonly string $endDate,
+        public readonly ?\DateTimeImmutable $startDate,
+        public readonly ?\DateTimeImmutable $endDate,
         public readonly string $comment,
-        public ?Notification $notification = null
     ) {}
 
-    public function withUpdatedOutageFromNotification(): self
+    public function withUpdatedOutage(Outage $outage): self
     {
         return new self(
             $this->id,
             $this->streetId,
             $this->streetName,
             $this->building,
-            $this->notification->start->format('c'),
-            $this->notification->end->format('c'),
-            $this->notification->comment
+            $outage->start,
+            $outage->end,
+            $outage->comment
         );
     }
+
 }

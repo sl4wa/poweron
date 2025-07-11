@@ -2,10 +2,9 @@
 
 namespace App\Infrastructure\Telegram\Sender;
 
-use App\Domain\Entity\User;
-use App\Domain\ValueObject\Notification;
 use App\Application\Exception\NotificationSendException;
 use App\Application\Interface\Service\NotificationSenderInterface;
+use App\Domain\DTO\NotificationSenderDTO;
 use SergiX44\Nutgram\Nutgram;
 use SergiX44\Nutgram\Telegram\Exceptions\TelegramException;
 
@@ -16,24 +15,24 @@ class TelegramNotificationSender implements NotificationSenderInterface
         private readonly TelegramNotificationFormatter $formatter,
     ) {}
 
-    public function send(User $user): void
+    public function send(NotificationSenderDTO $dto): void
     {
         try {
             $this->bot->sendMessage(
-                text: $this->formatter->format($user->notification),
-                chat_id: $user->id,
+                text: $this->formatter->format($dto),
+                chat_id: $dto->user->id,
                 parse_mode: 'HTML'
             );
         } catch (TelegramException $e) {
             throw new NotificationSendException(
-                $user->id,
+                $dto->user->id,
                 $e->getMessage(),
                 $e->getCode(),
                 $e
             );
         } catch (\Throwable $e) {
             throw new NotificationSendException(
-                $user->id,
+                $dto->user->id,
                 $e->getMessage(),
                 0,
                 $e

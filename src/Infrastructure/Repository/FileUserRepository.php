@@ -43,8 +43,8 @@ class FileUserRepository implements UserRepositoryInterface
             'street_id'   => $user->streetId,
             'street_name' => $user->streetName,
             'building'    => $user->building,
-            'start_date'  => $user->startDate,
-            'end_date'    => $user->endDate,
+            'start_date'  => $user->startDate instanceof \DateTimeImmutable ? $user->startDate->format(DATE_ATOM) : '',
+            'end_date'    => $user->endDate instanceof \DateTimeImmutable ? $user->endDate->format(DATE_ATOM) : '',
             'comment'     => $user->comment,
         ];
         $lines = [];
@@ -92,8 +92,8 @@ class FileUserRepository implements UserRepositoryInterface
             (int)$fields['street_id'],
             $fields['street_name'],
             $fields['building'],
-            $fields['start_date'],
-            $fields['end_date'],
+            $fields['start_date'] ? new \DateTimeImmutable($fields['start_date']) : null,
+            $fields['end_date'] ? new \DateTimeImmutable($fields['end_date']) : null,
             $fields['comment']
         );
     }

@@ -1,8 +1,8 @@
 <?php
 namespace App\Domain\Event;
 
+use App\Domain\Entity\Outage;
 use App\Domain\Entity\User;
-use App\Domain\ValueObject\Notification;
 
 final class OutageProcessed
 {
@@ -10,6 +10,7 @@ final class OutageProcessed
      * @param User[] $usersToBeNotified
      */
     public function __construct(
+        public readonly Outage $outage,
         public readonly array $usersToBeNotified
     ) {}
 }

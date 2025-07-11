@@ -108,8 +108,8 @@ class SubscriptionConversation extends Conversation
             streetId: $this->selectedStreetId,
             streetName: $this->selectedStreetName,
             building: $building,
-            startDate: '',
-            endDate: '',
+            startDate: null,
+            endDate: null,
             comment: ''
         );
         $this->userRepository->save($user);
