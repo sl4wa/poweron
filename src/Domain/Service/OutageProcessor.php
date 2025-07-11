@@ -1,21 +1,20 @@
 <?php
+
 namespace App\Domain\Service;
 
 use App\Domain\Entity\Outage;
-use App\Domain\Interface\Repository\UserRepositoryInterface;
+use App\Domain\Entity\User;
 use App\Domain\ValueObject\Notification;
 
 class OutageProcessor
 {
-    public function __construct(private UserRepositoryInterface $userRepository) {}
-
     /**
      * @param Outage[] $outages
+     * @param User[] $users
      * @return Notification[]
      */
-    public function process(array $outages): array
+    public function process(array $outages, array $users): array
     {
-        $users = $this->userRepository->findAll();
         $sent = [];
         $notifications = [];
 

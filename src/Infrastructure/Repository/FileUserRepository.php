@@ -2,8 +2,8 @@
 
 namespace App\Infrastructure\Repository;
 
+use App\Application\Interface\Repository\UserRepositoryInterface;
 use App\Domain\Entity\User;
-use App\Domain\Interface\Repository\UserRepositoryInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 class FileUserRepository implements UserRepositoryInterface
