@@ -3,7 +3,7 @@
 namespace App\Infrastructure\Telegram\Sender;
 
 use App\Application\Exception\NotificationSendException;
-use App\Application\Interface\Service\NotificationSenderInterface;
+use App\Application\Interface\NotificationSenderInterface;
 use App\Domain\DTO\NotificationSenderDTO;
 use SergiX44\Nutgram\Nutgram;
 use SergiX44\Nutgram\Telegram\Exceptions\TelegramException;

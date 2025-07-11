@@ -1,7 +1,7 @@
 <?php
 namespace App\Application\Service;
 
-use App\Application\Interface\Provider\OutageProviderInterface;
+use App\Application\Interface\OutageProviderInterface;
 use App\Domain\Event\OutageFound;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 

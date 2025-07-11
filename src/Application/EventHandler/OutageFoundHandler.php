@@ -2,7 +2,7 @@
 
 namespace App\Application\EventHandler;
 
-use App\Application\Interface\Repository\UserRepositoryInterface;
+use App\Application\Interface\UserRepositoryInterface;
 use App\Domain\Event\OutageFound;
 use App\Domain\Event\OutageProcessed;
 use App\Domain\Service\OutageProcessor;

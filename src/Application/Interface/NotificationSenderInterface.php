@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Application\Interface\Service;
+namespace App\Application\Interface;
 
 use App\Application\Exception\NotificationSendException;
 use App\Domain\DTO\NotificationSenderDTO;

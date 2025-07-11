@@ -2,7 +2,7 @@
 
 namespace App\Infrastructure\Repository;
 
-use App\Application\Interface\Repository\UserRepositoryInterface;
+use App\Application\Interface\UserRepositoryInterface;
 use App\Domain\Entity\User;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 

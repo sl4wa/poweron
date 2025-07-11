@@ -2,8 +2,8 @@
 namespace App\Application\EventHandler;
 
 use App\Application\Exception\NotificationSendException;
-use App\Application\Interface\Repository\UserRepositoryInterface;
-use App\Application\Interface\Service\NotificationSenderInterface;
+use App\Application\Interface\NotificationSenderInterface;
+use App\Application\Interface\UserRepositoryInterface;
 use App\Domain\DTO\NotificationSenderDTO;
 use App\Domain\Event\OutageProcessed;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
